@@ -1,0 +1,27 @@
+
+Minimum Requirements:-
+Python==3.6 or higher
+Flask==2.1.1 or higher
+requests==2.28.1 or higher
+python-dotenv==0.21.0 or higher
+
+Python: backend logic
+Flask: For creating the web application.
+requests: For making HTTP requests to the Tomorrow.io API.
+python-dotenv: For managing environment variables from a .env file.
+
+To install the dependencies -- 
+Open your terminal.
+
+Run the following command to install Flask: 
+pip install Flask
+
+Run the following command to Install the requests library:
+pip install requests
+
+Run the following comamand to Install python-dotenv:
+pip install python-dotenv
+
+All of the required dependencies/libraries can be installed all at once using this command:
+pip install Flask requests python-dotenv
+
