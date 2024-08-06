@@ -101,10 +101,10 @@ Check the AQI and pollen information for your current location (requires geoloca
 View the 6-day forecast for MTSU.
 
 ## Project Structure
-app.py: The main Flask application file
-templates/index.html: The main HTML template
-static/script.js: JavaScript file for frontend functionality
-static/styles.css: CSS file for styling 
+app.py: The main Flask application file.
+templates/index.html: The main HTML template.
+static/script.js: JavaScript file for frontend functionality.
+static/styles.css: CSS file for styling.
 
 ## Customization
 The MTSU widget can be customized to show weather for a different location by changing the data-location-id attribute in the HTML.
