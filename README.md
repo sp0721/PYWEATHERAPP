@@ -111,9 +111,7 @@ The MTSU widget can be customized to show weather for a different location by ch
 The refresh interval for weather data can be adjusted by modifying the setInterval duration in the JavaScript code.
 
 ## Contributors
-SHREEJI
-OM
-MEGH
+SHREEJI PATEL, OM PATEL, MEGH PATEL
 
 ## Acknowledgements
 Weather data provided by Tomorrow.io
