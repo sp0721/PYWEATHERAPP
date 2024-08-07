@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>❄️☁️🌡️Weather App🌡️☁️❄️</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+            background: linear-gradient(to right, #6a11cb, #2575fc);
+            color: #fff;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .search-section {
+            grid-column: 1 / -1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .search-container {
+            width: 100%;
+            max-width: 600px;
+            display: flex;
+            margin-bottom: 10px;
+        }
+
+        input, button {
+            padding: 10px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+
+        input {
+            flex-grow: 1;
+        }
+
+        button {
+            background-color: #ff6f61;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #ff3b2f;
+        }
+
+        #cityList {
+            width: 100%;
+            max-width: 600px;
+            background-color: white;
+            color: black;
+            border-radius: 5px;
+            max-height: 200px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+
+        .city-item {
+            padding: 10px;
+            cursor: pointer;
+            text-align: left;
+        }
+
+        .city-item:hover {
+            background-color: #f0f0f0;
+        }
+
+        .widget {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .widget-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .widget-header h2 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .widget-body {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+        }
+
+        .widget-body > div {
+            text-align: center;
+            flex: 1 1 30%;
+            margin: 10px;
+        }
+
+        .widget-body i {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .label {
+            display: block;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+
+        .widget-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        #customWidget {
+            grid-column: 1;
+            grid-row: 2 / span 2;
+        }
+
+        #aqiPollenWidget {
+            grid-column: 2;
+            grid-row: 2;
+        }
+
+        #mtsuWidgetContainer {
+            grid-column: 2;
+            grid-row: 3;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes sunny {
+            0% { background-color: #ffeb3b; }
+            50% { background-color: #ffc107; }
+            100% { background-color: #ffeb3b; }
+        }
+
+        @keyframes rainy {
+            0% { background-color: #2196f3; }
+            50% { background-color: #1976d2; }
+            100% { background-color: #2196f3; }
+        }
+
+        @keyframes cloudy {
+            0% { background-color: #9e9e9e; }
+            50% { background-color: #757575; }
+            100% { background-color: #9e9e9e; }
+        }
+
+        /* Weather-specific Styles */
+        .sunny {
+            animation: sunny 3s infinite alternate;
+        }
+
+        .rainy {
+            animation: rainy 3s infinite alternate;
+        }
+
+        .cloudy {
+            animation: cloudy 3s infinite alternate;
+        }
+
+        /* Sun Animation */
+        .sun {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 50px;
+            height: 50px;
+            background: radial-gradient(circle, #ffeb3b 60%, transparent 61%);
+            border-radius: 50%;
+            box-shadow: 0 0 30px 10px rgba(255, 235, 59, 0.5);
+            animation: rotate 5s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Cloud Animation */
+        .cloud {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            width: 100px;
+            height: 50px;
+            background: #fff;
+            border-radius: 50%;
+            box-shadow: 0 0 20px 5px rgba(255, 255, 255, 0.5);
+            animation: moveClouds 10s linear infinite;
+        }
+
+        .cloud::before, .cloud::after {
+            content: '';
+            position: absolute;
+            background: #fff;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            top: -10px;
+        }
+
+        .cloud::before {
+            left: 10px;
+        }
+
+        .cloud::after {
+            left: 30px;
+        }
+
+        @keyframes moveClouds {
+            from { transform: translateX(0); }
+            to { transform: translateX(100px); }
+        }
+    </style>
+</head>
+<body>
+    <h1> ❄️☁️🌡️Weather App🌡️☁️❄️</h1>
+    <div class="container">
+        <div class="search-section">
+            <div class="search-container">
+                <input type="text" id="locationInput" placeholder="Enter city name">
+                <button id="searchCityButton">Search City</button>
+            </div>
+            <div id="cityList" class="hidden"></div>
+        </div>
+        <div id="customWidget" class="widget hidden">
+            <div class="widget-title">Searched City Weather</div>
+            <div class="widget-header">
+                <h2 id="locationName"></h2>
+                <p id="currentDate"></p>
+            </div>
+            <div class="widget-body">
+               
+            </div>
+        </div>
+        <div id="aqiPollenWidget" class="widget">
+            <div class="widget-title">Your Location Weather</div>
+            <div class="tomorrow"
+               data-location-id=""
+               data-language="EN"
+               data-unit-system="IMPERIAL"
+               data-skin="light"
+               data-widget-type="aqiPollen"
+               style="padding-bottom:22px;position:relative;"
+            >
+              <a
+                href="https://www.tomorrow.io/weather-api/"
+                rel="nofollow noopener noreferrer"
+                target="_blank"
+                style="position: absolute; bottom: 0; transform: translateX(-50%); left: 50%;"
+              >
+                <img
+                  alt="Powered by the Tomorrow.io Weather API"
+                  src="https://weather-website-client.tomorrow.io/img/powered-by.svg"
+                  width="250"
+                  height="18"
+                />
+              </a>
+            </div>
+        </div>
+        <div id="mtsuWidgetContainer" class="widget">
+            <div class="widget-title">MTSU Weather</div>
+            <div class="tomorrow"
+               data-location-id="122482"
+               data-language="EN"
+               data-unit-system="IMPERIAL"
+               data-skin="dark"
+               data-widget-type="upcoming"
+               style="padding-bottom:22px;position:relative;"
+            >
+              <a
+                href="https://www.tomorrow.io/weather-api/"
+                rel="nofollow noopener noreferrer"
+                target="_blank"
+                style="position: absolute; bottom: 0; transform: translateX(-50%); left: 50%;"
+              >
+                <img
+                  alt="Powered by the Tomorrow.io Weather API"
+                  src="https://weather-website-client.tomorrow.io/img/powered-by.svg"
+                  width="250"
+                  height="18"
+                />
+              </a>
+            </div>
+        </div>
+    </div>
+    <script>
+        (function(d, s, id) {
+            if (d.getElementById(id)) {
+                if (window.__TOMORROW__) {
+                    window.__TOMORROW__.renderWidget();
+                }
+                return;
+            }
+            const fjs = d.getElementsByTagName(s)[0];
+            const js = d.createElement(s);
+            js.id = id;
+            js.src = "https://www.tomorrow.io/v1/widget/sdk/sdk.bundle.min.js?t=" + new Date().getTime();
+
+            fjs.parentNode.insertBefore(js, fjs);
+        })(document, 'script', 'tomorrow-sdk');
+    </script>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+
+<p id="lastRefreshTimestamp"></p>
+
+<footer style="margin-top: 50px; padding: 20px; background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1); color: white; text-align: center; font-size: 1.2em; font-weight: bold; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); animation: gradientBG 15s ease infinite; position: relative; overflow: hidden;">
+    <span style="position: relative; z-index: 1; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">Designed/Developed by SHREEJI, OM, MEGH</span>
+    <style>
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        @keyframes shine {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        footer::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+            animation: shine 5s linear infinite;
+        }
+    </style>
+</footer>
+
+
+</html>
